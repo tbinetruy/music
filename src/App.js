@@ -1,8 +1,13 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+// @flow
 
-class App extends Component {
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import './App.css'
+import * as S from './solfeggio/solfeggio.js'
+
+console.log(S)
+
+class App extends Component<{}, {}> {
   render() {
     return (
       <div className="App">
@@ -18,4 +23,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App
