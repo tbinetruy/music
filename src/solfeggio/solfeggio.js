@@ -42,6 +42,9 @@ type Interval = [Note, Note]
 */
 type createInterval = Note => Interval | Error
 
+/*
+  Takes a root note and a height and returns an interval
+*/
 const getInterval = (n: Note, h: number): [Note, Note] | Error => {
     const i = N.get(n)
 
@@ -116,22 +119,34 @@ const intervals = ((): {[IntervalName]: createInterval} => {
 })()
 
 type Triad = [Note, Note, Note]
-const majorTriad = (n: Note): Triad => [
-    n,
-    intervals.majorThird(n)[1],
-    intervals.perfectFifth(n)[1],
-]
+type TriadQuality =
+    | "diminished"
+    | "minor"
+    | "major"
+    | "augmented"
+    | "suspended"
 
-const minorTriad = (n: Note): Triad => [
-    n,
-    intervals.minorThird(n)[1],
-    intervals.perfectFifth(n)[1],
-]
+type CreateTriad = (n: Note) => Triad
 
-const triads = {
-    major: majorTriad,
-    minor: minorTriad,
-}
+const triadStructure: Map<TriadQuality, [IntervalName, IntervalName]> = new Map()
+triadStructure.set("diminished", ["majorThird", "diminishedFifth"])
+triadStructure.set("minor", ["minorThird", "perfectFifth"])
+triadStructure.set("major", ["majorThird", "perfectFifth"])
+triadStructure.set("augmented", ["augmentedThird", "augmentedFifth"])
+triadStructure.set("suspended", ["perfectFourth", "perfectFifth"])
+
+const triads = ((): {[TriadQuality]: CreateTriad} => {
+    let result = {}
+    for (let [k, v] of triadStructure) {
+        result[k] = n => [
+            n,
+            intervals[v[0]](n)[1],
+            intervals[v[1]](n)[1],
+        ]
+    }
+
+    return result
+})()
 
 export {
     intervals,
